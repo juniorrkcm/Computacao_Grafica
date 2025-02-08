@@ -1,2 +1,2 @@
-# Computa-o_Gr-fica
+# Computaco_Grafica
 Repositorio contendo os artefatos solicitados na disciplina de Computação Gráfica
