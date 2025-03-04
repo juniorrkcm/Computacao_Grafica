@@ -1,11 +1,13 @@
 # README - Projeto de Computação Gráfica
 
 ## Sobre o Projeto
-Este projeto contém implementações de diferentes algoritmos de rasterização e preenchimento de primitivas gráficas, organizados nas seguintes categorias:
+Este projeto contém implementações de diferentes algoritmos de rasterização, recorte e preenchimento de primitivas gráficas, organizados nas seguintes categorias:
 
 1. **Rasterização de Retas** - Algoritmos para desenhar retas pixel a pixel.
 2. **Rasterização de Circunferências** - Métodos para desenhar circunferências de forma eficiente.
 3. **Preenchimento de Polígonos** - Técnicas para preencher polígonos com diferentes estratégias.
+4. **Rasterização de Curvas** - Técnicas para desenhar retas com pontos gerando curvas.
+5. **Recorte de Poligonos** - Algoritmo para recortar polígonos.
 
 Cada categoria contém códigos específicos para a sua respectiva função.
 
@@ -21,12 +23,21 @@ CG/
 │   │-- Paramétrica.py
 │   │-- Simetria.py
 │   │-- Rasterização de Circunferências.pdf
-│
+|
+│-- Curva/
+│   │-- Casteljau.py
+│   │-- Paramétrica.py
+│   │-- Curva de Bezier.pdf
+|
 │-- Preechimento/
 │   │-- Flood.py
 │   │-- Geometrica.py
 │   │-- Preechimento de Poligonos.pdf
 │
+│-- Recorte/
+│   │-- Sutherland.py
+│   │-- Algoritmo de Recorte.pdf
+|
 │-- Reta/
 │   │-- Analítico.py
 │   │-- Bresenham.py
@@ -66,6 +77,18 @@ python Simetria.py
 ```bash
 cd Preechimento
 python Flood.py
+```
+
+#### **Rasterização de Curvas**
+```bash
+cd Curva
+python Casteljau.py
+```
+
+#### **Recorte de Polígonos**
+```bash
+cd Recorte
+python Sutherland.py
 ```
 
 Os scripts abrirão uma janela utilizando **Pygame** para exibir os resultados gráficos.
