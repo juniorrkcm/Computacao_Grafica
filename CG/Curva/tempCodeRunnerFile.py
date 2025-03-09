@@ -20,36 +20,29 @@ def animate_casteljau(P, ax, title):
 
     linhas = []
     pontos, = ax.plot([], [], 'ro')
-    curva, = ax.plot([], [], 'b-')  # Linha da curva de Bézier
 
     def init():
         pontos.set_data([], [])
-        curva.set_data([], [])
-        return pontos, curva
+        return pontos,
 
     def update(frame):
         t = frame / 100
         subdivisoes = casteljau_iterativo(P, t)
 
-        # Limpar linhas anteriores
+        # limpar linhas anteriores
         for ln in linhas:
             ln.remove()
         linhas.clear()
 
-        # Desenhar subdivisões intermediárias
+        # desenha subdivisões intermediárias
         for sub in subdivisoes[:-1]:
-            ln, = ax.plot(sub[:, 0], sub[:, 1], 'o--', color='gray', alpha=0.5)
+            ln, = ax.plot(sub[:,0], sub[:,1], 'o--', color='gray', alpha=0.5)
             linhas.append(ln)
 
-        # Calcular e desenhar a curva de Bézier
-        pontos_curva = np.array([casteljau_iterativo(P, ti)[-1][0] for ti in np.linspace(0, t, 100)])
-        curva.set_data(pontos_curva[:, 0], pontos_curva[:, 1])
-
-        # Atualizar o ponto final
         ponto_final = subdivisoes[-1][0]
         pontos.set_data(ponto_final[0], ponto_final[1])
 
-        return linhas + [pontos, curva]
+        return linhas + [pontos]
 
     ani = animation.FuncAnimation(fig, update, frames=101, init_func=init,
                                   blit=True, interval=50, repeat=True)

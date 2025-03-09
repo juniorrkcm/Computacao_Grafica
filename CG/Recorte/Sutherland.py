@@ -12,7 +12,7 @@ c = [[150, 100], [150, 150], [200, 150], [200, 200], [300, 200], [300, 150], [35
 d = [[120, 320], [120, 480], [380, 480], [380, 340], [300, 340], [300, 410], [200, 410], [200, 320]]
 
 # Escolha do polígono a ser desenhado
-poligono_escolhido = c  # Modifique para a, b, c ou d
+poligono_escolhido = d  # Modifique para a, b, c ou d
 
 # Aplicar deslocamento apenas ao polígono b
 if poligono_escolhido == b:
@@ -68,7 +68,7 @@ def clip_polygon(polygon, clip_rect):
                 new_polygon.append(intersec)
             prev_point = curr_point
         clipped_polygon = new_polygon
-
+    print(clipped_polygon)
     return clipped_polygon
 
 def update(frame):
