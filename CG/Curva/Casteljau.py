@@ -1,71 +1,64 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 
-def casteljau_iterativo(points, t):
-    points = np.array(points)
-    subdivisoes = [points]
+def PMCurva(P0, P1, P2, P3):
+    """
+    Calcula os pontos intermediários da curva de Bézier usando o método de De Casteljau.
+    Retorna os novos pontos para subdivisão.
+    """
+    # Primeira subdivisão
+    P0xN1 = (P0 + P1) / 2
+    P1xN1 = (P1 + P2) / 2
+    P2xN1 = (P2 + P3) / 2
+    
+    # Segunda subdivisão
+    P0xN2 = (P0xN1 + P1xN1) / 2
+    P1xN2 = (P1xN1 + P2xN1) / 2
+    
+    # Terceira subdivisão (ponto na curva)
+    P0xN3 = (P0xN2 + P1xN2) / 2
+    
+    return P0xN1, P1xN1, P2xN1, P0xN2, P1xN2, P0xN3
 
-    while len(points) > 1:
-        points = np.array([(1 - t) * points[i] + t * points[i + 1] 
-                           for i in range(len(points) - 1)])
-        subdivisoes.append(points)
+def casteljau_recursive(P0, P1, P2, P3, t, curve_points):
+    """
+    Algoritmo de De Casteljau recursivo para calcular pontos da curva de Bézier.
+    """
+    if t > 0.005:
+        e = t / 2
+        P0xN1, P1xN1, P2xN1, P0xN2, P1xN2, P0xN3 = PMCurva(P0, P1, P2, P3)
+        casteljau_recursive(P0, P0xN1, P0xN2, P0xN3, e, curve_points)
+        casteljau_recursive(P0xN3, P1xN2, P2xN1, P3, e, curve_points)
+    else:
+        curve_points.append(P0)
 
-    return subdivisoes
+# Definir os pontos de controle
+P0 = np.array([0, 0])
+P1 = np.array([2, 4])
+P2 = np.array([6, 4])
+P3 = np.array([8, 0])
 
-def animate_casteljau(P, ax, title):
-    ax.set_xlim(0, 130)
-    ax.set_ylim(0, 110)
-    ax.set_title(title)
+# Criar a curva de Bézier
+t_values = np.linspace(0, 1, 100)
+bezier_curve = []
+casteljau_recursive(P0, P1, P2, P3, 1, bezier_curve)
+bezier_curve = np.array(bezier_curve)
 
-    linhas = []
-    pontos, = ax.plot([], [], 'ro')
-    curva, = ax.plot([], [], 'b-')  # Linha da curva de Bézier
+# Criar a figura
+fig, ax = plt.subplots()
+ax.set_xlim(-1, 10)
+ax.set_ylim(-1, 10)
+ax.set_title("Curva de Bézier - Algoritmo de Casteljau Recursivo")
+ax.set_xlabel("X")
+ax.set_ylabel("Y")
 
-    def init():
-        pontos.set_data([], [])
-        curva.set_data([], [])
-        return pontos, curva
+# Plotar os pontos de controle
+control_points = [P0, P1, P2, P3]
+ax.plot([p[0] for p in control_points], [p[1] for p in control_points], 'ro--', label="Pontos de Controle")
 
-    def update(frame):
-        t = frame / 100
-        subdivisoes = casteljau_iterativo(P, t)
+# Plotar a curva de Bézier
+if len(bezier_curve) > 0:
+    ax.plot(bezier_curve[:, 0], bezier_curve[:, 1], 'b-', lw=2, label="Curva de Bézier")
 
-        # Limpar linhas anteriores
-        for ln in linhas:
-            ln.remove()
-        linhas.clear()
-
-        # Desenhar subdivisões intermediárias
-        for sub in subdivisoes[:-1]:
-            ln, = ax.plot(sub[:, 0], sub[:, 1], 'o--', color='gray', alpha=0.5)
-            linhas.append(ln)
-
-        # Calcular e desenhar a curva de Bézier
-        pontos_curva = np.array([casteljau_iterativo(P, ti)[-1][0] for ti in np.linspace(0, t, 100)])
-        curva.set_data(pontos_curva[:, 0], pontos_curva[:, 1])
-
-        # Atualizar o ponto final
-        ponto_final = subdivisoes[-1][0]
-        pontos.set_data(ponto_final[0], ponto_final[1])
-
-        return linhas + [pontos, curva]
-
-    ani = animation.FuncAnimation(fig, update, frames=101, init_func=init,
-                                  blit=True, interval=50, repeat=True)
-    return ani
-
-fig, axes = plt.subplots(1, 3, figsize=(15, 5))
-
-# Pontos de controle
-P_quadratica = np.array([[10, 10], [80, 80], [100, 20]])
-P_cubica = np.array([[10, 10], [40, 60], [60, 60], [90, 10]])
-P_n = np.array([[10, 10], [20, 80], [50, 100], [80, 80], [100, 40]])
-
-# Animações
-ani1 = animate_casteljau(P_quadratica, axes[0], "Quadrática")
-ani2 = animate_casteljau(P_cubica, axes[1], "Cúbica")
-ani3 = animate_casteljau(P_n, axes[2], "Grau N")
-
-plt.tight_layout()
+plt.legend()
 plt.show()
